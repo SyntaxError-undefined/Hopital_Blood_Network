@@ -1,6 +1,6 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { motion } from 'framer-motion'
-import { Brain, AlertTriangle } from 'lucide-react'
+import { Brain, AlertTriangle, Sparkles, KeyRound } from 'lucide-react'
 import { PageHeader, PageLoader, ChartCard, MetricCard } from '@/components/ui/PageElements'
 import { FilterDropdown } from '@/components/ui/FormElements'
 import { StatusBadge } from '@/components/ui/Badge'
@@ -13,10 +13,12 @@ import {
 } from '@/components/charts/Charts'
 import { useAsyncData } from '@/hooks'
 import { getForecastData } from '@/services/forecast'
+import { getGeminiInsight } from '@/services/gemini'
 import { BLOOD_TYPES, cn } from '@/utils'
 
 const CRITICAL_THRESHOLD = 10
 
+// ── Risk Timeline ─────────────────────────────────────────────────────────────
 function WarningTimeline({ criticalInHours, predictedDate }) {
   const steps = [
     { label: 'Current', status: 'active', desc: 'Monitoring stock levels' },
@@ -25,7 +27,7 @@ function WarningTimeline({ criticalInHours, predictedDate }) {
   ]
 
   return (
-    <div className="interactive-card p-6">
+    <div className="interactive-card h-full p-6">
       <h3 className="text-sm font-semibold text-text">Risk Timeline</h3>
       <div className="mt-6 flex flex-col gap-0 sm:flex-row sm:items-start sm:justify-between">
         {steps.map((step, i) => (
@@ -58,6 +60,117 @@ function WarningTimeline({ criticalInHours, predictedDate }) {
   )
 }
 
+// ── AI Insight Card ───────────────────────────────────────────────────────────
+function AiInsightCard({ geminiContext, confidence, criticalInHours }) {
+  const [insight, setInsight] = useState(null)
+  const [loading, setLoading] = useState(true)
+  const [fromCache, setFromCache] = useState(false)
+
+  const bloodType = geminiContext?.bloodType
+  const predictedCritical = geminiContext?.predictedCritical
+  const trend = geminiContext?.trend
+  const stockBucket = geminiContext ? Math.floor(geminiContext.currentStock / 2) * 2 : 0
+
+  useEffect(() => {
+    if (!geminiContext) return
+    setLoading(true)
+
+    // getGeminiInsight always returns a non-null text (falls back to local insight)
+    getGeminiInsight(geminiContext).then(({ text, fromCache: cached }) => {
+      setInsight(text)
+      setFromCache(!!cached)
+      setLoading(false)
+    })
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [bloodType, predictedCritical, trend, stockBucket])
+
+  return (
+    <motion.div
+      initial={{ opacity: 0, y: 10 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ delay: 0.15 }}
+      className="flex h-full lg:col-span-3"
+    >
+      <div className="interactive-card flex h-full flex-col overflow-hidden border-primary/15">
+        {/* Header */}
+        <div className="border-b border-primary/10 bg-primary/[0.03] px-6 py-4">
+          <div className="flex items-center justify-between gap-3">
+            <div className="flex items-center gap-3">
+              <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-primary/10">
+                <Brain className="h-5 w-5 text-primary" strokeWidth={1.75} />
+              </div>
+              <div>
+                <h3 className="text-subheading text-text flex items-center gap-2">
+                  AI Insight
+                  <Sparkles className="h-3.5 w-3.5 text-primary/60" />
+                </h3>
+                <p className="text-xs text-text-muted">
+                  From NN model output &amp; stock metrics
+                </p>
+              </div>
+            </div>
+            {/* Live / Cached badge */}
+            <div className={cn(
+              'flex items-center gap-1.5 rounded-full px-2.5 py-1 text-xs font-medium',
+              fromCache ? 'bg-gray-100 text-text-muted' : 'bg-primary/10 text-primary'
+            )}>
+              <motion.span
+                className={cn('h-1.5 w-1.5 rounded-full', fromCache ? 'bg-gray-400' : 'bg-primary')}
+                animate={{ opacity: loading ? [1, 0.3, 1] : 1 }}
+                transition={{ duration: 1, repeat: loading ? Infinity : 0 }}
+              />
+              {loading ? 'Generating…' : fromCache ? 'Cached' : 'Live'}
+            </div>
+          </div>
+        </div>
+
+        {/* Body */}
+        <div className="flex flex-1 flex-col p-6">
+          <div className="flex-1">
+            {/* Loading skeleton */}
+            {loading && (
+              <div className="space-y-2.5">
+                <div className="h-3.5 w-full animate-pulse rounded-full bg-gray-100" />
+                <div className="h-3.5 w-5/6 animate-pulse rounded-full bg-gray-100" />
+                <div className="h-3.5 w-4/6 animate-pulse rounded-full bg-gray-100" />
+              </div>
+            )}
+
+            {/* Insight text — always present once loaded */}
+            {insight && !loading && (
+              <motion.p
+                key={insight}
+                initial={{ opacity: 0, y: 4 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.4 }}
+                className="text-sm leading-relaxed text-text-muted"
+              >
+                {insight}
+              </motion.p>
+            )}
+
+            {criticalInHours && !loading && (
+              <div className="mt-4 flex items-center gap-2 rounded-xl border border-critical/20 bg-critical/5 px-4 py-2.5 text-sm font-medium text-critical">
+                <AlertTriangle className="h-4 w-4" />
+                Action required within {criticalInHours} hours
+              </div>
+            )}
+          </div>
+
+          {/* NN Confidence pinned to bottom */}
+          <div className="mt-auto pt-6">
+            <div className="inline-flex rounded-xl border border-gray-100 bg-gray-50 px-4 py-2.5 text-sm">
+              <span className="text-text-muted">NN Confidence </span>
+              <span className="font-bold text-primary">{confidence}%</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </motion.div>
+  )
+}
+
+// ── Page ──────────────────────────────────────────────────────────────────────
 export default function ForecastPage() {
   const [bloodType, setBloodType] = useState('O-')
   const [dateRange, setDateRange] = useState('14d')
@@ -75,7 +188,7 @@ export default function ForecastPage() {
     <div className="page-container">
       <PageHeader
         title="Shortage Prediction"
-        description="AI-powered forecasting to anticipate blood stock shortages before they impact patient care"
+        description="Neural network forecasting to anticipate blood stock shortages before they impact patient care"
         badge={
           <span className="rounded-full bg-primary/10 px-3 py-1 text-xs font-bold text-primary">
             {forecast.bloodType}
@@ -105,6 +218,7 @@ export default function ForecastPage() {
         }
       />
 
+      {/* ── Metric cards ── */}
       <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
         <MetricCard
           label="Current Stock"
@@ -150,14 +264,15 @@ export default function ForecastPage() {
         />
       </div>
 
+      {/* ── Chart ── */}
       <ChartCard
         title="Stock Trend & Forecast"
-        description="Solid line shows actual inventory. Dashed line is the AI prediction with confidence bounds."
+        description="Solid line shows actual inventory. Dashed line is the NN prediction with confidence bounds."
         legend={
           <ChartLegend
             items={[
               { label: 'Current Stock', color: '#C62828' },
-              { label: 'AI Forecast', color: '#FB8C00' },
+              { label: 'NN Forecast', color: '#FB8C00' },
               { label: 'Critical Threshold', color: '#D32F2F' },
             ]}
           />
@@ -166,74 +281,49 @@ export default function ForecastPage() {
         <ForecastChart data={forecast.chartData} criticalThreshold={forecast.criticalThreshold || CRITICAL_THRESHOLD} />
       </ChartCard>
 
+      {/* ── Real Trend Explanation ── */}
       <div className="interactive-card p-6">
         <h3 className="text-sm font-semibold text-text">Trend Explanation</h3>
         <p className="mt-2 text-sm leading-relaxed text-text-muted">{forecast.trendExplanation}</p>
       </div>
 
-      <div className="grid gap-6 lg:grid-cols-5">
-        <motion.div
-          initial={{ opacity: 0, y: 10 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.15 }}
-          className="lg:col-span-3"
-        >
-          <div className="interactive-card overflow-hidden border-primary/15">
-            <div className="border-b border-primary/10 bg-primary/[0.03] px-6 py-4">
-              <div className="flex items-center gap-3">
-                <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-primary/10">
-                  <Brain className="h-5 w-5 text-primary" strokeWidth={1.75} />
-                </div>
-                <div>
-                  <h3 className="text-subheading text-text">AI Insight</h3>
-                  <p className="text-xs text-text-muted">Generated from consumption patterns & scheduled demand</p>
-                </div>
-              </div>
-            </div>
-            <div className="p-6">
-              <p className="text-sm leading-relaxed text-text-muted">{forecast.aiInsight}</p>
-              <div className="mt-5 flex flex-wrap items-center gap-3">
-                <div className="rounded-xl border border-gray-100 bg-gray-50 px-4 py-2.5 text-sm">
-                  <span className="text-text-muted">Confidence </span>
-                  <span className="font-bold text-primary">{forecast.confidence}%</span>
-                </div>
-                {forecast.criticalInHours && (
-                  <div className="flex items-center gap-2 rounded-xl border border-critical/20 bg-critical/5 px-4 py-2.5 text-sm font-medium text-critical">
-                    <AlertTriangle className="h-4 w-4" />
-                    Action required within {forecast.criticalInHours} hours
-                  </div>
-                )}
-              </div>
-            </div>
-          </div>
-        </motion.div>
-
-        <div className="lg:col-span-2 space-y-6">
+      {/* ── AI Insight + Risk Timeline ── */}
+      <div className="grid items-stretch gap-6 lg:grid-cols-5">
+        <AiInsightCard
+          geminiContext={forecast.geminiContext}
+          confidence={forecast.confidence}
+          criticalInHours={forecast.criticalInHours}
+        />
+        <div className="h-full lg:col-span-2">
           <WarningTimeline
             criticalInHours={forecast.criticalInHours}
             predictedDate={forecast.predictedDate}
           />
-          <ChartCard title="Historical Trend" description="Monthly usage vs received">
-            <HistoricalBarChart data={forecast.historicalTrend} height={200} />
-          </ChartCard>
-          <div className="interactive-card p-5">
-            <h3 className="text-sm font-semibold text-text">Recent Predictions</h3>
-            <div className="mt-4 space-y-3">
-              {(forecast.allRecentPredictions || []).slice(0, 4).map((pred) => (
-                <div key={pred.id} className="flex items-center justify-between rounded-xl bg-gray-50 px-4 py-3">
-                  <div>
-                    <span className="text-sm font-bold text-primary">{pred.bloodType}</span>
-                    <p className="text-xs text-text-muted">{pred.prediction}</p>
-                  </div>
-                  <div className="text-right">
-                    <p className="text-sm font-semibold text-text">{pred.confidence}%</p>
-                    <p className={cn('text-xs capitalize', pred.outcome === 'confirmed' ? 'text-healthy' : pred.outcome === 'pending' ? 'text-warning' : 'text-text-muted')}>
-                      {pred.outcome}
-                    </p>
-                  </div>
+        </div>
+      </div>
+
+      {/* ── Historical Trend + Recent Predictions ── */}
+      <div className="grid items-stretch gap-6 lg:grid-cols-2">
+        <ChartCard title="Historical Trend" description="Monthly usage vs received">
+          <HistoricalBarChart data={forecast.historicalTrend} height={200} />
+        </ChartCard>
+        <div className="interactive-card flex flex-col p-5">
+          <h3 className="text-sm font-semibold text-text">Recent Predictions</h3>
+          <div className="mt-4 flex flex-1 flex-col justify-center space-y-3">
+            {(forecast.allRecentPredictions || []).slice(0, 4).map((pred) => (
+              <div key={pred.id} className="flex items-center justify-between rounded-xl bg-gray-50 px-4 py-3">
+                <div>
+                  <span className="text-sm font-bold text-primary">{pred.bloodType}</span>
+                  <p className="text-xs text-text-muted">{pred.prediction}</p>
                 </div>
-              ))}
-            </div>
+                <div className="text-right">
+                  <p className="text-sm font-semibold text-text">{pred.confidence}%</p>
+                  <p className={cn('text-xs capitalize', pred.outcome === 'confirmed' ? 'text-healthy' : pred.outcome === 'pending' ? 'text-warning' : 'text-text-muted')}>
+                    {pred.outcome}
+                  </p>
+                </div>
+              </div>
+            ))}
           </div>
         </div>
       </div>

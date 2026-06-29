@@ -10,4 +10,13 @@ export default defineConfig({
       '@': path.resolve(__dirname, './src'),
     },
   },
+  server: {
+    proxy: {
+      '/hospitals': 'http://127.0.0.1:8000',
+      '/forecast': 'http://127.0.0.1:8000',
+      '/transfers': 'http://127.0.0.1:8000',
+      '/inventory': 'http://127.0.0.1:8000',
+      '/stock': 'http://127.0.0.1:8000',
+    },
+  },
 })
