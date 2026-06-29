@@ -43,7 +43,7 @@ export const forecastData = {
     trend: 'decreasing',
     chartData: generateForecastData('O-'),
     aiInsight:
-      'O- blood stock is projected to reach critical levels within 36 hours based on current consumption rate of 2.1 units/day and scheduled surgeries. Immediate transfer from Kokilaben Hospital (15 units available) or donor drive recommended.',
+      'O- blood stock is projected to reach critical levels within 36 hours based on current consumption rate of 2.1 units/day and scheduled surgeries. Immediate transfer from Aditya Birla Memorial Hospital or donor drive recommended.',
     historicalTrend: [
       { month: 'Jan', usage: 28, received: 32 },
       { month: 'Feb', usage: 25, received: 30 },
@@ -85,7 +85,7 @@ export const forecastData = {
     trend: 'decreasing',
     chartData: generateForecastData('B+'),
     aiInsight:
-      'B+ stock shows gradual decline. Three major surgeries scheduled next week may accelerate depletion. Consider proactive transfer from Nanavati Hospital.',
+      'B+ stock shows gradual decline. Three major surgeries scheduled next week may accelerate depletion. Consider proactive transfer from Sassoon General Hospital.',
     historicalTrend: [
       { month: 'Jan', usage: 55, received: 60 },
       { month: 'Feb', usage: 52, received: 58 },

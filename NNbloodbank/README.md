@@ -5,7 +5,7 @@ This project builds the offline foundation, FastAPI backend, transfer suggestion
 ## What Is Included
 
 - `models.py` defines the SQLite schema with SQLAlchemy ORM models for hospitals, blood bags, daily stock snapshots, and transfer suggestions.
-- `generate_data.py` creates 90 days of daily stock history for 6 Indian hospitals across Mumbai, Delhi, Bengaluru, and Chennai.
+- `generate_data.py` creates 90 days of daily stock history for 6 Pune and Pimpri-Chinchwad hospital blood centres.
 - `train_forecast_model.py` trains a small real PyTorch neural network to predict whether stock for a hospital and blood type will fall below a critical threshold in the next 48 hours.
 - `api/main.py` exposes the existing database and saved model through HTTP endpoints.
 - `hospital_simulator.py` replays a curated sequence of live-looking hospital stock updates into `POST /stock/update`.
@@ -94,7 +94,7 @@ With FastAPI already running, open the dashboard and run:
 python hospital_simulator.py
 ```
 
-The simulator sends three small stock events to `POST /stock/update`: KEM Hospital Blood Centre reports `O-` dropping, then critical, and AIIMS Delhi Blood Centre confirms `O-` surplus. This stands in for hospital HMIS integrations calling the same endpoint one event at a time.
+The simulator sends three small stock events to `POST /stock/update`: Sassoon General Hospital Blood Centre reports `O-` dropping, then critical, and Deenanath Mangeshkar Hospital Blood Bank confirms an `O-` buffer. This stands in for hospital HMIS integrations calling the same endpoint one event at a time.
 
 To point at another API URL or slow the replay:
 
@@ -102,7 +102,7 @@ To point at another API URL or slow the replay:
 python hospital_simulator.py --api-base http://127.0.0.1:8001 --delay 3
 ```
 
-Demo narration: "This script is standing in for what a hospital HMIS would send. KEM just reported O-negative dropping to 4 units; the dashboard poll picks up the new snapshot, reruns the forecast read, and the transfer page suggests surplus O-negative from another hospital."
+Demo narration: "This script is standing in for what a hospital HMIS would send. Sassoon just reported O-negative dropping to 4 units; the dashboard poll picks up the new snapshot, reruns the forecast read, and the transfer page suggests nearby O-negative support from another Pune hospital."
 
 If you edit files under `frontend/src`, rebuild the frontend before restarting FastAPI:
 
@@ -127,7 +127,7 @@ cd ..
 
 ## API Test Commands
 
-These examples use hospital `1`, which is `KEM Hospital Blood Centre` in the synthetic data, and blood type `O+`.
+These examples use hospital `1`, which is `Sassoon General Hospital Blood Centre` in the synthetic data, and blood type `O+`.
 
 ```bash
 curl http://127.0.0.1:8000/hospitals

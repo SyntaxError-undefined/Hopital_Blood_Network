@@ -1,11 +1,12 @@
-import { apiGet, BLOOD_TYPE_ORDER } from '@/services/api'
+import { apiGet, BLOOD_TYPE_ORDER, CRITICAL_THRESHOLDS } from '@/services/api'
+import { getSelectedHospitalId } from '@/services/auth'
 
 const bucketKeys = ['days0To3', 'days4To7', 'days8To14', 'daysOver14']
 
 function statusForItem(item) {
-  if (item.status === 'critical') return 'critical'
-  if (item.status === 'high') return 'high'
-  if (item.status === 'moderate') return 'moderate'
+  const threshold = CRITICAL_THRESHOLDS[item.blood_type] || 8
+  if (item.available_units < threshold) return 'critical'
+  if (item.available_units === threshold) return 'warning'
   return 'healthy'
 }
 
@@ -41,7 +42,8 @@ function percent(part, whole) {
 }
 
 export async function getInventoryPageData() {
-  const response = await apiGet('/inventory/expiry')
+  const selectedHospitalId = getSelectedHospitalId()
+  const response = await apiGet(`/inventory/expiry${selectedHospitalId ? `?hospital_id=${selectedHospitalId}` : ''}`)
   const items = response.items
     .map(mapInventoryItem)
     .sort((a, b) => BLOOD_TYPE_ORDER.indexOf(a.bloodType) - BLOOD_TYPE_ORDER.indexOf(b.bloodType))
@@ -60,7 +62,7 @@ export async function getInventoryPageData() {
       available,
       reserved,
       expiringSoon,
-      status: status === 'high' || status === 'moderate' ? 'warning' : status,
+      status,
     })),
   }
 

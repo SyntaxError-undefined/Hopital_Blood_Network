@@ -40,8 +40,7 @@ const barColors = {
 
 const statusFilterOptions = [
   { value: 'critical', label: 'Critical' },
-  { value: 'high', label: 'High' },
-  { value: 'moderate', label: 'Moderate' },
+  { value: 'warning', label: 'Warning' },
   { value: 'healthy', label: 'Healthy' },
 ]
 

@@ -1,6 +1,6 @@
 import { useState } from 'react'
 import { motion } from 'framer-motion'
-import { Brain, AlertTriangle, TrendingDown, TrendingUp, Minus } from 'lucide-react'
+import { Brain, AlertTriangle } from 'lucide-react'
 import { PageHeader, PageLoader, ChartCard, MetricCard } from '@/components/ui/PageElements'
 import { FilterDropdown } from '@/components/ui/FormElements'
 import { StatusBadge } from '@/components/ui/Badge'
@@ -69,7 +69,6 @@ export default function ForecastPage() {
 
   if (loading || !forecast) return <PageLoader />
 
-  const TrendIcon = forecast.trend === 'decreasing' ? TrendingDown : forecast.trend === 'increasing' ? TrendingUp : Minus
   const riskVariant = forecast.riskLevel === 'critical' ? 'critical' : forecast.riskLevel === 'warning' ? 'warning' : 'healthy'
 
   return (
@@ -148,13 +147,6 @@ export default function ForecastPage() {
           label="Risk Assessment"
           variant={riskVariant}
           value={<div className="mt-1"><StatusBadge status={forecast.riskLevel} size="lg" /></div>}
-          sublabel={
-            <span className="flex items-center gap-1.5 capitalize">
-              <TrendIcon className="h-3.5 w-3.5" />
-              {forecast.trend} trend
-              {forecast.predictedMin && ` · Min ${forecast.predictedMin} units`}
-            </span>
-          }
         />
       </div>
 

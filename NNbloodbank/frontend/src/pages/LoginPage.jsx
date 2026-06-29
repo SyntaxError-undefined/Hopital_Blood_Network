@@ -181,7 +181,7 @@ export default function LoginPage() {
           </p>
           <div className="mt-8 flex justify-center gap-8">
             <div className="text-center">
-              <p className="text-2xl font-bold text-primary">8+</p>
+              <p className="text-2xl font-bold text-primary">6</p>
               <p className="text-sm text-text-muted">Hospitals</p>
             </div>
             <div className="text-center">

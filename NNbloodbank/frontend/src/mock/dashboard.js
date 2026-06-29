@@ -6,11 +6,11 @@ export const dashboardStats = {
 }
 
 export const recentActivity = [
-  { id: 'act-001', type: 'transfer', message: 'Transfer of 8 O- units initiated from Kokilaben Hospital', timestamp: '2026-06-26T10:30:00Z', icon: 'truck' },
+  { id: 'act-001', type: 'transfer', message: 'Transfer of 8 O- units initiated from Aditya Birla Memorial Hospital', timestamp: '2026-06-26T10:30:00Z', icon: 'truck' },
   { id: 'act-002', type: 'alert', message: 'Critical alert triggered for O- blood type', timestamp: '2026-06-26T09:45:00Z', icon: 'alert-triangle' },
   { id: 'act-003', type: 'inventory', message: '12 units of B+ added to inventory from donor drive', timestamp: '2026-06-26T08:15:00Z', icon: 'plus' },
   { id: 'act-004', type: 'forecast', message: 'AI forecast updated: O- critical in 36 hours', timestamp: '2026-06-26T07:30:00Z', icon: 'trending-down' },
-  { id: 'act-005', type: 'transfer', message: 'Transfer completed: 5 B- units to Hinduja Hospital', timestamp: '2026-06-25T16:45:00Z', icon: 'check' },
+  { id: 'act-005', type: 'transfer', message: 'Transfer completed: 5 B- units to YCM Hospital', timestamp: '2026-06-25T16:45:00Z', icon: 'check' },
   { id: 'act-006', type: 'inventory', message: '3 units of AB- marked as expiring soon', timestamp: '2026-06-25T14:20:00Z', icon: 'clock' },
 ]
 

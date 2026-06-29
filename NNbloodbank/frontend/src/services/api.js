@@ -33,10 +33,10 @@ export function addDaysIso(days) {
   return date.toISOString().split('T')[0]
 }
 
-export function statusFromCounts(bloodTypes = {}, criticalAlerts = []) {
-  if (criticalAlerts.length > 0) return 'critical'
+export function statusFromCounts(bloodTypes = {}) {
   const values = Object.entries(bloodTypes)
-  if (values.some(([type, count]) => count <= (CRITICAL_THRESHOLDS[type] || 8))) return 'warning'
+  if (values.some(([type, count]) => count < (CRITICAL_THRESHOLDS[type] || 8))) return 'critical'
+  if (values.some(([type, count]) => count === (CRITICAL_THRESHOLDS[type] || 8))) return 'warning'
   return 'healthy'
 }
 

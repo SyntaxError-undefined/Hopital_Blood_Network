@@ -64,7 +64,7 @@ class InventoryBloodTypeItem(BaseModel):
     reserved_units: int
     expiry_buckets: InventoryExpiryBuckets
     oldest_expiry_date: date | None
-    status: Literal["healthy", "moderate", "high", "critical"]
+    status: Literal["healthy", "warning", "moderate", "high", "critical"]
 
 
 class InventoryExpiryResponse(BaseModel):

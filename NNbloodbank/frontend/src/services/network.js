@@ -40,7 +40,7 @@ export async function getHospitals() {
       location: hospital.city,
       city: hospital.city,
       coordinates: [hospital.lat, hospital.lng],
-      status: statusFromCounts(bloodTypes, criticalAlerts),
+      status: statusFromCounts(bloodTypes),
       totalUnits: Object.values(bloodTypes).reduce((total, value) => total + value, 0),
       bloodTypes,
       contact: 'Network blood bank',

@@ -30,7 +30,7 @@ export default function NetworkPage() {
     <div className="page-container">
       <PageHeader
         title="Network View"
-        description="Real-time blood inventory across connected hospitals in the Mumbai network"
+        description="Real-time blood inventory across connected hospitals in the Pune network"
       />
 
       <NetworkSummary hospitals={data.hospitals} />

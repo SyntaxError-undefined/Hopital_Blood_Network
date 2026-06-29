@@ -1,8 +1,8 @@
 export const transferSuggestions = [
   {
     id: 'transfer-001',
-    fromHospital: { id: 'hosp-003', name: 'Kokilaben Hospital', location: 'Andheri West' },
-    toHospital: { id: 'hosp-001', name: 'Apollo Hospital', location: 'Bandra West' },
+    fromHospital: { id: 'hosp-005', name: 'Aditya Birla Memorial Hospital Blood Bank', location: 'Thergaon' },
+    toHospital: { id: 'hosp-004', name: 'Jehangir Hospital Blood Bank', location: 'Sassoon Road' },
     bloodType: 'O-',
     units: 8,
     distance: 8.7,
@@ -17,8 +17,8 @@ export const transferSuggestions = [
   },
   {
     id: 'transfer-002',
-    fromHospital: { id: 'hosp-005', name: 'Nanavati Hospital', location: 'Vile Parle' },
-    toHospital: { id: 'hosp-004', name: 'Fortis Hospital', location: 'Mulund' },
+    fromHospital: { id: 'hosp-001', name: 'Sassoon General Hospital Blood Centre', location: 'Station Road' },
+    toHospital: { id: 'hosp-006', name: 'Yashwantrao Chavan Memorial Hospital Blood Bank', location: 'Sant Tukaram Nagar' },
     bloodType: 'B+',
     units: 12,
     distance: 12.3,
@@ -27,14 +27,14 @@ export const transferSuggestions = [
     urgency: 'high',
     status: 'pending',
     aiScore: 88,
-    reason: 'Fortis Hospital B+ stock critically low',
+    reason: 'YCM Hospital B+ stock critically low',
     createdAt: '2026-06-26T09:15:00Z',
     estimatedArrival: '1 hr 10 mins',
   },
   {
     id: 'transfer-003',
-    fromHospital: { id: 'hosp-001', name: 'Apollo Hospital', location: 'Bandra West' },
-    toHospital: { id: 'hosp-008', name: 'Hinduja Hospital', location: 'Mahim' },
+    fromHospital: { id: 'hosp-002', name: 'Ruby Hall Clinic Blood Bank', location: 'Sangamvadi' },
+    toHospital: { id: 'hosp-003', name: 'Deenanath Mangeshkar Hospital Blood Bank', location: 'Erandwane' },
     bloodType: 'A+',
     units: 6,
     distance: 4.2,
@@ -49,8 +49,8 @@ export const transferSuggestions = [
   },
   {
     id: 'transfer-004',
-    fromHospital: { id: 'hosp-007', name: 'Jaslok Hospital', location: 'Pedder Road' },
-    toHospital: { id: 'hosp-002', name: 'Lilavati Hospital', location: 'Bandra' },
+    fromHospital: { id: 'hosp-001', name: 'Sassoon General Hospital Blood Centre', location: 'Station Road' },
+    toHospital: { id: 'hosp-006', name: 'Yashwantrao Chavan Memorial Hospital Blood Bank', location: 'Sant Tukaram Nagar' },
     bloodType: 'AB-',
     units: 4,
     distance: 3.8,
@@ -59,14 +59,14 @@ export const transferSuggestions = [
     urgency: 'high',
     status: 'pending',
     aiScore: 91,
-    reason: 'Rare blood type shortage at Lilavati',
+    reason: 'Rare blood type shortage at YCM Hospital',
     createdAt: '2026-06-26T07:30:00Z',
     estimatedArrival: '20 mins',
   },
   {
     id: 'transfer-005',
-    fromHospital: { id: 'hosp-006', name: 'Breach Candy Hospital', location: 'Breach Candy' },
-    toHospital: { id: 'hosp-001', name: 'Apollo Hospital', location: 'Bandra West' },
+    fromHospital: { id: 'hosp-003', name: 'Deenanath Mangeshkar Hospital Blood Bank', location: 'Erandwane' },
+    toHospital: { id: 'hosp-004', name: 'Jehangir Hospital Blood Bank', location: 'Sassoon Road' },
     bloodType: 'O+',
     units: 10,
     distance: 6.8,
@@ -81,8 +81,8 @@ export const transferSuggestions = [
   },
   {
     id: 'transfer-006',
-    fromHospital: { id: 'hosp-003', name: 'Kokilaben Hospital', location: 'Andheri West' },
-    toHospital: { id: 'hosp-008', name: 'Hinduja Hospital', location: 'Mahim' },
+    fromHospital: { id: 'hosp-002', name: 'Ruby Hall Clinic Blood Bank', location: 'Sangamvadi' },
+    toHospital: { id: 'hosp-006', name: 'Yashwantrao Chavan Memorial Hospital Blood Bank', location: 'Sant Tukaram Nagar' },
     bloodType: 'B-',
     units: 5,
     distance: 6.1,
@@ -99,8 +99,8 @@ export const transferSuggestions = [
 
 export const transferDetails = {
   'transfer-001': {
-    fromStock: { 'O-': 15, total: 289 },
-    toStock: { 'O-': 12, total: 342 },
+    fromStock: { 'O-': 11, total: 166 },
+    toStock: { 'O-': 5, total: 100 },
     forecast: 'O- critical at destination in 36 hours without transfer',
     timeline: [
       { step: 'Request Initiated', time: '10:30 AM', status: 'completed' },
@@ -108,6 +108,6 @@ export const transferDetails = {
       { step: 'In Transit', time: 'Est. 10:45 AM', status: 'active' },
       { step: 'Delivery & Verification', time: 'Est. 11:15 AM', status: 'pending' },
     ],
-    expectedImpact: 'Restores 3-day buffer for O- at Apollo Hospital. Reduces network shortage risk by 42%.',
+    expectedImpact: 'Restores 3-day buffer for O- at Jehangir Hospital. Reduces network shortage risk by 42%.',
   },
 }

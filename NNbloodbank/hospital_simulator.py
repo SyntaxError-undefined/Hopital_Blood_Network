@@ -14,19 +14,19 @@ EVENTS = [
         "hospital_id": 1,
         "blood_type": "O-",
         "new_count": 8,
-        "label": "KEM Hospital Blood Centre: O- dropping",
+        "label": "Sassoon General Hospital Blood Centre: O- dropping",
     },
     {
         "hospital_id": 1,
         "blood_type": "O-",
         "new_count": 4,
-        "label": "KEM Hospital Blood Centre: O- now critical",
+        "label": "Sassoon General Hospital Blood Centre: O- now critical",
     },
     {
         "hospital_id": 3,
         "blood_type": "O-",
-        "new_count": 22,
-        "label": "AIIMS Delhi Blood Centre: confirms surplus O-",
+        "new_count": 14,
+        "label": "Deenanath Mangeshkar Hospital Blood Bank: confirms O- buffer",
     },
 ]
 

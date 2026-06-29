@@ -32,10 +32,10 @@ export const reportsData = {
     wastageExpired: { value: 8, change: -15.0, trend: 'down' },
   },
   topTransfers: [
-    { from: 'Kokilaben Hospital', to: 'Apollo Hospital', bloodType: 'O-', units: 24, month: 'Jun' },
-    { from: 'Apollo Hospital', to: 'Hinduja Hospital', bloodType: 'A+', units: 18, month: 'Jun' },
-    { from: 'Nanavati Hospital', to: 'Fortis Hospital', bloodType: 'B+', units: 15, month: 'May' },
-    { from: 'Jaslok Hospital', to: 'Lilavati Hospital', bloodType: 'AB-', units: 8, month: 'May' },
+    { from: 'Aditya Birla', to: 'Jehangir', bloodType: 'O-', units: 24, month: 'Jun' },
+    { from: 'Sassoon', to: 'YCM Hospital', bloodType: 'A+', units: 18, month: 'Jun' },
+    { from: 'Ruby Hall', to: 'Deenanath', bloodType: 'B+', units: 15, month: 'May' },
+    { from: 'Sassoon', to: 'YCM Hospital', bloodType: 'AB-', units: 8, month: 'May' },
   ],
   expiryTrend: [
     { month: 'Jan', expired: 12, expiringSoon: 28 },
@@ -46,12 +46,12 @@ export const reportsData = {
     { month: 'Jun', expired: 8, expiringSoon: 26 },
   ],
   hospitalComparison: [
-    { name: 'Apollo', usage: 284, added: 312, wastage: 8, transfers: 42 },
-    { name: 'Kokilaben', usage: 245, added: 268, wastage: 6, transfers: 38 },
-    { name: 'Fortis', usage: 198, added: 210, wastage: 12, transfers: 35 },
-    { name: 'Nanavati', usage: 220, added: 240, wastage: 7, transfers: 30 },
-    { name: 'Lilavati', usage: 175, added: 190, wastage: 9, transfers: 28 },
-    { name: 'Hinduja', usage: 160, added: 175, wastage: 10, transfers: 25 },
+    { name: 'Sassoon', usage: 284, added: 312, wastage: 8, transfers: 42 },
+    { name: 'Ruby Hall', usage: 245, added: 268, wastage: 6, transfers: 38 },
+    { name: 'Deenanath', usage: 198, added: 210, wastage: 12, transfers: 35 },
+    { name: 'Jehangir', usage: 220, added: 240, wastage: 7, transfers: 30 },
+    { name: 'Aditya Birla', usage: 175, added: 190, wastage: 9, transfers: 28 },
+    { name: 'YCM Hospital', usage: 160, added: 175, wastage: 10, transfers: 25 },
   ],
   forecastAccuracy: [
     { month: 'Jan', accuracy: 82 },

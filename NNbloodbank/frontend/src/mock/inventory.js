@@ -26,7 +26,7 @@ export const todaysUpdates = [
   { id: 'upd-001', type: 'added', bloodType: 'B+', units: 12, message: '12 units of B+ added from donor drive', timestamp: '2026-06-26T08:15:00Z' },
   { id: 'upd-002', type: 'reserved', bloodType: 'O+', units: 4, message: '4 units of O+ reserved for surgery', timestamp: '2026-06-26T09:30:00Z' },
   { id: 'upd-003', type: 'expiring', bloodType: 'AB-', units: 1, message: '1 unit of AB- marked expiring tomorrow', timestamp: '2026-06-26T10:45:00Z' },
-  { id: 'upd-004', type: 'transferred', bloodType: 'O-', units: 8, message: '8 units of O- incoming from Kokilaben', timestamp: '2026-06-26T11:00:00Z' },
+  { id: 'upd-004', type: 'transferred', bloodType: 'O-', units: 8, message: '8 units of O- incoming from Aditya Birla Memorial Hospital', timestamp: '2026-06-26T11:00:00Z' },
   { id: 'upd-005', type: 'updated', bloodType: 'A-', units: 8, message: 'A- stock count verified and updated', timestamp: '2026-06-26T07:20:00Z' },
 ]
 
