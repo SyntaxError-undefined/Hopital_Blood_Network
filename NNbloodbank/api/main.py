@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+from contextlib import asynccontextmanager
 from dataclasses import dataclass
 from datetime import date, datetime, timedelta, timezone
 from pathlib import Path
@@ -52,16 +53,6 @@ from .schemas import (
 )
 
 
-app = FastAPI(title="Connected Hospital Blood Network API", version="1.0.0")
-
-app.add_middleware(
-    CORSMiddleware,
-    allow_origins=["*"],
-    allow_credentials=True,
-    allow_methods=["*"],
-    allow_headers=["*"],
-)
-
 SessionLocal = get_session_factory()
 model: ShortageNet | None = None
 NEAR_EXPIRY_DAYS = 7
@@ -77,6 +68,44 @@ class SPAStaticFiles(StaticFiles):
                 return await super().get_response("index.html", scope)
             raise
 
+
+@asynccontextmanager
+async def lifespan(app: FastAPI):
+    """Load the forecast model once on startup and release on shutdown."""
+    global model
+    model_file = Path(MODEL_PATH)
+    if not model_file.exists():
+        raise RuntimeError(
+            f"Forecast model file not found at {model_file}. "
+            "Run train_forecast_model.py first."
+        )
+    try:
+        checkpoint = torch.load(model_file, map_location="cpu", weights_only=True)
+        loaded_model = ShortageNet(input_size=checkpoint["input_size"])
+        loaded_model.load_state_dict(checkpoint["model_state_dict"])
+        loaded_model.eval()
+        model = loaded_model
+    except Exception as exc:
+        raise RuntimeError(
+            f"Failed to load forecast model from {model_file}: {exc}"
+        ) from exc
+    yield  # app runs here
+    model = None  # cleanup on shutdown
+
+
+app = FastAPI(
+    title="Connected Hospital Blood Network API",
+    version="1.0.0",
+    lifespan=lifespan,
+)
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
 
 if STATIC_DIR.exists():
     app.mount("/app", SPAStaticFiles(directory=STATIC_DIR, html=True), name="web_app")
@@ -124,23 +153,7 @@ class TransferCandidate:
     reason: str
 
 
-@app.on_event("startup")
-def load_forecast_model() -> None:
-    global model
-    model_file = Path(MODEL_PATH)
-    if not model_file.exists():
-        raise RuntimeError(
-            f"Forecast model file not found at {model_file}. Run train_forecast_model.py first."
-        )
 
-    try:
-        checkpoint = torch.load(model_file, map_location="cpu")
-        loaded_model = ShortageNet(input_size=checkpoint["input_size"])
-        loaded_model.load_state_dict(checkpoint["model_state_dict"])
-        loaded_model.eval()
-        model = loaded_model
-    except Exception as exc:
-        raise RuntimeError(f"Failed to load forecast model from {model_file}: {exc}") from exc
 
 
 @app.get("/hospitals", response_model=list[HospitalResponse])
