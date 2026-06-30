@@ -206,9 +206,14 @@ export default function DashboardPage() {
   if (loading || !data) return <PageLoader />
 
   const { stats, activity, forecast, inventory, shortageAlerts } = data
-  const hasCritical = stats.criticalAlerts.value > 0
   const myHospitalStatus = shortageAlerts?.overallStatus || 'healthy'
+  const isMyHospitalCritical = myHospitalStatus === 'critical'
   const selectedBtData = selectedBt ? shortageAlerts?.alertBloodTypes?.find(bt => bt.bloodType === selectedBt) : null
+  
+  // Calculate critical alerts specifically for this hospital
+  const myCriticalCount = shortageAlerts?.alertBloodTypes?.filter(
+    bt => bt.status === 'critical' || shortageAlerts?.forecastCritical?.has(bt.bloodType)
+  ).length || 0
 
   return (
     <div className="page-container">
@@ -217,7 +222,7 @@ export default function DashboardPage() {
         description="Overview of your blood bank operations and network status"
       />
 
-      {hasCritical && (
+      {isMyHospitalCritical && myCriticalCount > 0 && (
         <motion.div
           initial={{ opacity: 0, y: -4 }}
           animate={{ opacity: 1, y: 0 }}
@@ -229,10 +234,10 @@ export default function DashboardPage() {
             </div>
             <div>
               <p className="text-sm font-semibold text-critical">
-                {stats.criticalAlerts.value} critical alert{stats.criticalAlerts.value !== 1 ? 's' : ''} require attention
+                {myCriticalCount} critical alert{myCriticalCount !== 1 ? 's' : ''} require attention
               </p>
               <p className="text-xs text-text-muted">
-                {forecast.bloodType} stock projected critical in {forecast.criticalInHours} hours
+                {selectedBtData?.bloodType || 'Multiple blood types'} stock requires immediate attention
               </p>
             </div>
           </div>
